@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.wordsWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.words {
+  display: flex;
+}
+
+.word {
+  margin: 0.25rem;
+  line-height: 1.5rem;
+  font-size: 1.5rem;
+}
