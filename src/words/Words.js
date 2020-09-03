@@ -1,25 +1,35 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {map, last} from 'lodash';
 import Word from './Word';
-import {map, sampleSize} from 'lodash'
+import useKeyPress from '../hooks/useKeyPress';
+import {load} from '../utils/loader'
 
-class Words extends React.Component {
-  state = {words: null, keyPressed: null, cursor: {word: 0}};
-  constructor(props) {
-    super(props);
+
+function Words() {
+  const [currentChar, setCurrentChar] = useState({});
+  const [words, setWords] = useState([]);
+
+  function getInitialChar(initialWords) {
+    return {
+      content: initialWords[0].charAt(0),
+      word: 0,
+      current: true,
+      letter: 0,
+      correct: null
+    }
   }
 
-  componentDidMount() {
-    fetch('js/english_10k.json')
-      .then((r) => r.json())
-      .then((data) => {
-        this.setState({ words: sampleSize(data, 10) });
+  function getCharObjects(initialWords) {
+    return map(initialWords, (w, i) => {
+      return map(w.split(''), (l, j) => {
+        return {
+          content: l,
+          current: false,
+          word: i,
+          letter: j,
+          correct: null
+        }
       })
-
-    window.addEventListener('keydown', ({key}) => {
-      this.setState(
-        {
-          keyPressed: key,
-        });
     })
   }
 
@@ -32,19 +42,16 @@ class Words extends React.Component {
     <div className="wordsWrapper">
       <div className="words">
         {
-          map(words, (w, i) =>
-            <Word
+          map(words, (letters, i) => {
+            return <Word
               key={`word_${i}`}
-              content={w}
-              keyPressed={keyPressed}
-              isActive={cursor.word === i}
+              letters={letters}
             />
-          )
+          })
         }
       </div>
     </div>
-    )
-  }
+  )
 }
 
 export default Words
