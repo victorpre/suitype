@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {map, last} from 'lodash';
 import Word from './Word';
 import useKeyPress from '../hooks/useKeyPress';
-import {load} from '../utils/loader'
+import load from '../utils/loader'
 
 
 function Words() {
