@@ -7,7 +7,7 @@ function Word({letters}) {
   return(
     <div className="word">
       {
-        map(letters, (v, i) => <Letter key={i} content={v.content} correct={v.correct} /> )
+        map(letters, (v, i) => <Letter key={i} content={v.content} isCorrect={v.correct} /> )
       }
     </div>
   )

@@ -1,19 +1,19 @@
 import React from 'react';
 import {isNull} from 'lodash';
 
-function setColor(correct) {
-  if (isNull(correct)) {
-    return 'black'
+function Letter({content, isCorrect}) {
+  function setColor(isCorrect) {
+    if (isNull(isCorrect)) {
+      return 'black'
+    }
+
+    return isCorrect ? 'green' : 'red'
   }
 
-  return correct ? 'green' : 'red'
-}
-
-function Letter(props) {
-  const {content, correct} = props;
   const style = {
-    color: setColor(correct)
+    color: setColor(isCorrect)
   };
+
   return(
     <span style={style}>
       {content}
