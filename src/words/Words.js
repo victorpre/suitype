@@ -34,18 +34,18 @@ function Words() {
   }
 
   function newCharTyped(k) {
+    const { word, letter, content } = currentChar;
     // end of words
-    if (currentChar.word + 1 === words.length && currentChar.letter === last(words).length - 1 ) {
+    if (word + 1 === words.length && letter === last(words).length - 1 ) {
       return
     }
 
     let updatedWords = words;
     let updatedCurrentChar = currentChar;
-    const { word, letter, content } = currentChar;
 
     updatedCurrentChar = {...currentChar,
-        correct: isEqual(k, content),
-        current: false
+      correct: isEqual(k, content),
+      current: false
     }
 
     // check if end of word
@@ -86,6 +86,32 @@ function Words() {
     setWords(updatedWords);
   }
 
+  function spacebarTyped() {
+    const { word, letter } = currentChar;
+    if (letter === 0) {
+      return
+    }
+
+    // go to next word
+    let updatedWords = words;
+
+    // if middle of word
+    if (letter !== words[word].length - 1) {
+      const wordIndex = word + 1;
+      const letterIndex = 0;
+      const newCurrent = {...words[wordIndex][letterIndex], current: true};
+      updatedWords[wordIndex][letterIndex] = newCurrent;
+
+      // mark all remaining non-typed chars as incorrect
+      for (var i = letter; i < words[word].length; i++) {
+        updatedWords[word][i] = {...updatedWords[word][i], current: false, correct: false};
+      }
+      setCurrentChar(newCurrent)
+      setWords(updatedWords);
+    }
+
+  }
+
   useEffect( () => {
     async function loadWords() {
       const words = await load();
@@ -100,6 +126,8 @@ function Words() {
   useKeyPress( k => {
     if (k === "Backspace") {
       backspaceTyped();
+    } else if (k === " ") {
+      spacebarTyped();
     } else {
       newCharTyped(k);
     }
