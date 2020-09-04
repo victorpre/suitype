@@ -113,8 +113,8 @@ function Words() {
   }
 
   useEffect( () => {
-    async function loadWords() {
-      const words = await load();
+    function loadWords() {
+      const words = load();
       console.log(words);
       setCurrentChar(getInitialChar(words));
       setWords(getCharObjects(words));

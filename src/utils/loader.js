@@ -1,7 +1,6 @@
 import {sampleSize} from 'lodash';
+import data from '../data/english_10k.json'
 
-export default async function load(count = 10) {
-  const req = await fetch('suitype/js/english_10k.json')
-  const res = await req.json()
-  return sampleSize(res, count)
+export default function load(count = 10) {
+  return sampleSize(data, count)
 };
