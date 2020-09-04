@@ -38,13 +38,15 @@
 }
 
 .wordsWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    display: flex;
+    width: 600px;
+    padding-left: 25%;
+  }
 
 .words {
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
 }
 
 .word {

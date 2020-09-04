@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {map, last, isEqual} from 'lodash';
+import {map, forEach, last, isEqual} from 'lodash';
 import Word from './Word';
 import useKeyPress from '../hooks/useKeyPress';
 import load from '../utils/loader'
@@ -33,6 +33,18 @@ function Words() {
     })
   }
 
+  function fetchMoreWords(updatedWords) {
+    const newChars = getCharObjects(load(10));
+    forEach(newChars, (newWord) => {
+      const wordIndex = updatedWords.length;
+      updatedWords[wordIndex] = [];
+      forEach(newWord, (newChar, letterIndex) => {
+        updatedWords[wordIndex][letterIndex] = {...newChar, word: wordIndex, letter: letterIndex};
+      });
+    })
+    return updatedWords;
+  }
+
   function newCharTyped(k) {
     const { word, letter, content } = currentChar;
     // end of words
@@ -57,6 +69,10 @@ function Words() {
     setCurrentChar(newCurrent)
 
     updatedWords[word][letter] = updatedCurrentChar;
+
+    if (word === updatedWords.length - 1) {
+      updatedWords = fetchMoreWords(updatedWords);
+    }
     setWords(updatedWords);
   }
 
@@ -82,7 +98,6 @@ function Words() {
 
     updatedWords[wordIndex][letterIndex] = previousChar;
     setCurrentChar(previousChar);
-
     setWords(updatedWords);
   }
 
@@ -114,7 +129,7 @@ function Words() {
 
   useEffect( () => {
     function loadWords() {
-      const words = load();
+      const words = load(10);
       console.log(words);
       setCurrentChar(getInitialChar(words));
       setWords(getCharObjects(words));
@@ -131,11 +146,6 @@ function Words() {
     } else {
       newCharTyped(k);
     }
-
-    // update words
-    // if (updatedWords.length < 10) {
-    //   // load more words
-    // }
   })
 
   return(
