@@ -54,7 +54,6 @@ function Words() {
     const { word, letter, content } = currentChar;
     if (!startTime) {
       setStartTime(currentTime());
-      // startTimer(60, () => {});
     }
     // end of words
     if (word + 1 === words.length && letter === last(words).length - 1 ) {
