@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {map, last} from 'lodash';
+import {map, last, isEqual} from 'lodash';
 import Word from './Word';
 import useKeyPress from '../hooks/useKeyPress';
 import load from '../utils/loader'
@@ -38,37 +38,26 @@ function Words() {
     if (currentChar.word + 1 === words.length && currentChar.letter === last(words).length - 1 ) {
       return
     }
+
     let updatedWords = words;
     let updatedCurrentChar = currentChar;
+    const { word, letter, content } = currentChar;
 
-    if (k === currentChar.content) {
-      updatedCurrentChar = {...currentChar,
-        correct: true,
+    updatedCurrentChar = {...currentChar,
+        correct: isEqual(k, content),
         current: false
-      }
-    } else {
-      updatedCurrentChar = {...currentChar,
-        correct: false,
-        current: false
-      }
     }
 
     // check if end of word
-    if (currentChar.letter === words[currentChar.word].length - 1) {
-      // END of word
-      const newCurrent = {...words[currentChar.word+1][0], current: true};
-      updatedWords[currentChar.word+1][0] = newCurrent;
-      setCurrentChar(newCurrent)
-    } else {
-      // MIDDLE of word
-      const newCurrent = {...words[currentChar.word][currentChar.letter+1], current: true};
-      updatedWords[currentChar.word][currentChar.letter+1] = newCurrent;
-      setCurrentChar(newCurrent)
-    }
+    const isEndOfWord = letter === words[word].length - 1;
+    const wordIndex = isEndOfWord ? word + 1 : word;
+    const letterIndex = isEndOfWord ? 0 : letter + 1;
+    const newCurrent = {...words[wordIndex][letterIndex], current: true};
+    updatedWords[wordIndex][letterIndex] = newCurrent;
+    setCurrentChar(newCurrent)
 
-    updatedWords[currentChar.word][currentChar.letter] = updatedCurrentChar;
+    updatedWords[word][letter] = updatedCurrentChar;
     setWords(updatedWords);
-    console.log("new incoming", updatedWords)
   }
 
   function backspaceTyped() {
@@ -76,34 +65,24 @@ function Words() {
       return
     }
 
+    const { word, letter } = currentChar;
     let updatedWords = words;
     let updatedCurrentChar = {...currentChar,
       correct: null,
       current: false
     };
 
-    updatedWords[currentChar.word][currentChar.letter] = updatedCurrentChar;
+    updatedWords[word][letter] = updatedCurrentChar;
 
-    // check if beginning of word
-    if (currentChar.letter === 0 ) {
-      // beginning of word
-      const previousWord = currentChar.word - 1;
-      const lastLetterIndex = words[previousWord].length - 1;
-      const previousChar = {...words[previousWord][lastLetterIndex], correct: null};
-      updatedWords[previousWord][lastLetterIndex] = previousChar;
-    console.log("new current", previousChar)
-      setCurrentChar(previousChar);
+    // // check if beginning or middle of word
+    const isFirstLetter = letter === 0;
+    const wordIndex = isFirstLetter ? word - 1 : word;
+    const letterIndex = isFirstLetter ? words[wordIndex].length - 1 : letter - 1;
+    const previousChar = {...words[wordIndex][letterIndex], correct: null};
 
+    updatedWords[wordIndex][letterIndex] = previousChar;
+    setCurrentChar(previousChar);
 
-    } else {
-      // MIDDLE of word
-       const previousChar = {...words[currentChar.word][currentChar.letter-1], correct: null};
-      updatedWords[currentChar.word][currentChar.letter-1] = previousChar;
-    console.log("new current", previousChar)
-      setCurrentChar(previousChar);
-    }
-
-    console.log("new incoming",updatedWords)
     setWords(updatedWords);
   }
 
@@ -131,17 +110,11 @@ function Words() {
     // }
   })
 
-  console.log(currentChar)
   return(
     <div className="wordsWrapper">
       <div className="words">
         {
-          map(words, (letters, i) => {
-            return <Word
-              key={`word_${i}`}
-              letters={letters}
-            />
-          })
+          map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
         }
       </div>
     </div>

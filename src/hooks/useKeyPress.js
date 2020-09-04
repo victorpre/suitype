@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import {includes} from 'lodash';
 
 const BACKSPACE = 8
 const SPACEBAR = 32
@@ -12,7 +13,7 @@ const useKeyPress = callback => {
       if (keyCode === BACKSPACE) {
         e.preventDefault();
       }
-      if ((keyPressed !== key && key.length === 1) || keyCode === BACKSPACE || keyCode === SPACEBAR) {
+      if ((keyPressed !== key && key.length === 1) || includes([BACKSPACE,SPACEBAR], keyCode)) {
         setKeyPressed(key);
         callback && callback(key);
       }
