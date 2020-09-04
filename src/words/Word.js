@@ -2,9 +2,7 @@ import React from 'react';
 import Letter from './Letter';
 import { map } from 'lodash'
 
-function Word(props) {
-
-  const {letters} = props;
+function Word({letters}) {
 
   return(
     <div className="word">
