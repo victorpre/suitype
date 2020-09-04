@@ -1,13 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {map, forEach, last, isEqual} from 'lodash';
 import Word from './Word';
+import Timer from '../timer/Timer';
 import useKeyPress from '../hooks/useKeyPress';
-import load from '../utils/loader'
+import load from '../utils/loader';
+import { currentTime } from '../utils/time';
 
 
 function Words() {
   const [currentChar, setCurrentChar] = useState({});
   const [words, setWords] = useState([]);
+  const [startTime, setStartTime] = useState(null);
+  const [wordCount, setWordCount] = useState(0);
+  const [wpm, setWpm] = useState(0);
 
   function getInitialChar(initialWords) {
     return {
@@ -47,6 +52,9 @@ function Words() {
 
   function newCharTyped(k) {
     const { word, letter, content } = currentChar;
+    if (!startTime) {
+      setStartTime(currentTime());
+    }
     // end of words
     if (word + 1 === words.length && letter === last(words).length - 1 ) {
       return
@@ -67,6 +75,12 @@ function Words() {
     const newCurrent = {...words[wordIndex][letterIndex], current: true};
     updatedWords[wordIndex][letterIndex] = newCurrent;
     setCurrentChar(newCurrent)
+
+    if (isEndOfWord) {
+      setWordCount(wordCount + 1);
+      const durationInMinutes = (currentTime() - startTime) / 60000.0;
+      setWpm(((wordCount + 1) / durationInMinutes).toFixed(2));
+    }
 
     updatedWords[word][letter] = updatedCurrentChar;
 
@@ -149,11 +163,14 @@ function Words() {
   })
 
   return(
-    <div className="wordsWrapper">
-      <div className="words">
-        {
-          map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
-        }
+    <div>
+      <Timer startTime={startTime} wpm={wpm}/>
+      <div className="wordsWrapper">
+        <div className="words">
+          {
+            map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
+          }
+        </div>
       </div>
     </div>
   )
