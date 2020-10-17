@@ -5,7 +5,7 @@ import Timer from '../timer/Timer';
 import useKeyPress from '../hooks/useKeyPress';
 import load from '../utils/loader';
 import { currentTime } from '../utils/time';
-import { Stack, Flex } from "@chakra-ui/core";
+import { Flex, IconButton, Stack } from "@chakra-ui/core";
 
 
 function Words() {
@@ -14,6 +14,18 @@ function Words() {
   const [startTime, setStartTime] = useState(null);
   const [wordCount, setWordCount] = useState(0);
   const [wpm, setWpm] = useState(0);
+
+
+  function loadWords() {
+      const words = load(10);
+      console.log(words);
+      setCurrentChar(getInitialChar(words));
+      setWords(getCharObjects(words));
+    }
+
+  useEffect( () => {
+    loadWords();
+  }, []);
 
   function getInitialChar(initialWords) {
     return {
@@ -142,17 +154,6 @@ function Words() {
 
   }
 
-  useEffect( () => {
-    function loadWords() {
-      const words = load(10);
-      console.log(words);
-      setCurrentChar(getInitialChar(words));
-      setWords(getCharObjects(words));
-    }
-    loadWords();
-  }, []);
-
-
   useKeyPress( k => {
     if (k === "Backspace") {
       backspaceTyped();
@@ -168,10 +169,20 @@ function Words() {
       <Flex>
         <Timer startTime={startTime} wpm={wpm}/>
       </Flex>
-      <Flex p={5} border="solid" borderWidth="1px" maxWidth="600px" rounded="5px" flexWrap="wrap">
+      <Flex p="30px" border="solid" borderWidth="1px" maxWidth="600px" rounded="5px" flexWrap="wrap">
         {
           map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
         }
+      </Flex>
+      <Flex>
+        <IconButton
+          variant="outline"
+          variantColor="gray"
+          aria-label="Redo"
+          size="lg"
+          icon="repeat"
+          onClick={loadWords}
+        />
       </Flex>
     </Stack>
   )
