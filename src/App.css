@@ -1,5 +1,4 @@
 .App {
-  text-align: center;
 }
 
 .App-logo {
@@ -38,15 +37,9 @@
 }
 
 .wordsWrapper {
-    display: flex;
-    width: 600px;
-    padding-left: 25%;
   }
 
 .words {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
 }
 
 .word {

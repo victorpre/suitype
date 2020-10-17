@@ -5,6 +5,7 @@ import Timer from '../timer/Timer';
 import useKeyPress from '../hooks/useKeyPress';
 import load from '../utils/loader';
 import { currentTime } from '../utils/time';
+import { Stack, Flex } from "@chakra-ui/core";
 
 
 function Words() {
@@ -163,16 +164,16 @@ function Words() {
   })
 
   return(
-    <div>
-      <Timer startTime={startTime} wpm={wpm}/>
-      <div className="wordsWrapper">
-        <div className="words">
-          {
-            map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
-          }
-        </div>
-      </div>
-    </div>
+    <Stack align="center">
+      <Flex>
+        <Timer startTime={startTime} wpm={wpm}/>
+      </Flex>
+      <Flex p={5} border="solid" borderWidth="1px" maxWidth="600px" rounded="5px" flexWrap="wrap">
+        {
+          map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
+        }
+      </Flex>
+    </Stack>
   )
 }
 
