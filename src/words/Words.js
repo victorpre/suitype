@@ -7,21 +7,25 @@ import load from '../utils/loader';
 import { currentTime } from '../utils/time';
 import { Flex, IconButton, Stack } from "@chakra-ui/core";
 
-
 function Words() {
   const [currentChar, setCurrentChar] = useState({});
   const [words, setWords] = useState([]);
   const [startTime, setStartTime] = useState(null);
   const [wordCount, setWordCount] = useState(0);
+  const [charsTyped, setCharsTyped] = useState(0);
   const [wpm, setWpm] = useState(0);
 
 
   function loadWords() {
-      const words = load(10);
-      console.log(words);
-      setCurrentChar(getInitialChar(words));
-      setWords(getCharObjects(words));
-    }
+    const words = load(10);
+    console.log(words);
+    setCurrentChar(getInitialChar(words));
+    setWords(getCharObjects(words));
+    setStartTime(null);
+    setWpm(0)
+    setCharsTyped(0);
+    document.getElementById("words-box").focus()
+  }
 
   useEffect( () => {
     loadWords();
@@ -169,13 +173,24 @@ function Words() {
       <Flex>
         <Timer startTime={startTime} wpm={wpm}/>
       </Flex>
-      <Flex p="30px" border="solid" borderWidth="1px" maxWidth="600px" rounded="5px" flexWrap="wrap">
+      <Flex
+        id="words-box"
+        outline="none"
+        tabIndex="-1"
+        p="30px"
+        borderWidth="1px"
+        maxWidth="600px"
+        rounded="5px"
+        flexWrap="wrap"
+        shadow="md"
+      >
         {
           map(words, (letters, i) => <Word key={`word_${i}`} letters={letters} />)
         }
       </Flex>
       <Flex>
         <IconButton
+          tabIndex="0"
           variant="outline"
           variantColor="gray"
           aria-label="Redo"
